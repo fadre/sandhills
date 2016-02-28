@@ -7,10 +7,10 @@ the pile collapses and the four grains are added to each of the neighbors (east 
 
 At the end, the an image is constructed. Each grid cell is mapped to a pixel on the image, the color depends on the number of sand grains in each cell.
 Currently:
-blue = 0 grains
-green = 1 grain
-yellow = 2 grains
-red = 3 grains
+* blue = 0 grains
+* green = 1 grain
+* yellow = 2 grains
+* red = 3 grains
 
 Here the result of a simulation with 1 Million grains in a 1000 x 1000 cell grid:
 ![Resulting Image](/docs/images/result.png)

@@ -1,43 +1,59 @@
 package ch.fadre.sandhills;
 
 
+import java.io.IOException;
+
 public class SandSimulation {
 
     private final long iterationCount;
-    private final short[][] grid;
+    private final int[][] grid;
     private final int width;
     private final int height;
 
     public static final int MAX_SIZE = 4;
+    private boolean stepWiseSimulation;
 
-    public SandSimulation(int width, int height, long iterationCount) {
+    public SandSimulation(int width, int height, long iterationCount, boolean stepWiseSimulation) {
         this.iterationCount = iterationCount;
         this.width = width;
         this.height = height;
-        grid = new short[height][width];
+        this.stepWiseSimulation = stepWiseSimulation;
+        grid = new int[height][width];
     }
 
-    public short[][] performSimulation(){
+    public int[][] performSimulation() throws IOException, InterruptedException {
         long start = System.currentTimeMillis();
         int maxIterations = 0;
-        long lastIt = start;
+        if(stepWiseSimulation){
+            performStepWiseSimulation(maxIterations);
+        } else {
+            grid[height / 2][width / 2] = (int)iterationCount;
+            redistribute(grid, iterationCount);
+        }
+        System.out.println("Took:" + (System.currentTimeMillis() - start) + " ms");
+        return grid;
+    }
+
+    private void performStepWiseSimulation(int maxIterations) throws IOException, InterruptedException {
+        long lastIterationTimestamp = System.currentTimeMillis();
 
         for (long i = 0; i < iterationCount; i++) {
             grid[height / 2][width / 2] = (short) (grid[height / 2][width / 2] + 1);
             if (i % 1000 == 0) {
-                lastIt = logProgress(grid, i, maxIterations, lastIt);
+                lastIterationTimestamp = logProgress(grid, i, maxIterations, lastIterationTimestamp);
                 maxIterations = 0;
+            }
+            if(i % 10000 == 0){
+                ImageWriter imageWriter = new ImageWriter();
+                imageWriter.writeToFile(imageWriter.generateImage(grid,width,height),"row");
             }
 
             int iterations = redistribute(grid,i );
             maxIterations = Math.max(maxIterations, iterations);
         }
-
-        System.out.println("Took:" + (System.currentTimeMillis() - start) + " ms");
-        return grid;
     }
 
-    private long logProgress(short[][] boxes,long iteration, int maxIterations, long lastIt) {
+    private long logProgress(int[][] boxes,long iteration, int maxIterations, long lastIt) {
         int[] bounds = getBounds(boxes, iteration);
         String iterationString = "Iteration " + iteration + " of " + iterationCount + " (" + String.format("%.2f", iteration / (double) iterationCount * 100) + "%)";
         String boundString = " Bounds: " + bounds[0] + " " + bounds[1] + " " + bounds[2] + " " + bounds[3];
@@ -48,60 +64,42 @@ public class SandSimulation {
     }
 
 
-    private int redistribute(short[][] boxes, long numberOfElements) {
-        int iterations = 0;
-        boolean balanced = false;
+    private int redistribute(int[][] boxes, long numberOfElements) {
+        int redistributeIterations = 0;
         int[] bounds = getBounds(boxes, numberOfElements);
         int maxBoundOffset = getBoundOffset(numberOfElements);
 
-        while (!balanced) {
-            for (int i = bounds[2]; i <= bounds[3]; i++) {
-                for (int j = bounds[0]; j <= bounds[1]; j++) {
+        while (!isBalanced(boxes)) {
+            for (int i = bounds[0]; i <= bounds[1]; i++) {
+                for (int j = bounds[2]; j <= bounds[3]; j++) {
                     moveToNeighborsIfNecessary(i, j, boxes);
-
                 }
             }
-            bounds[0] = Math.max(0, Math.max(bounds[0] - 1, width/2 - maxBoundOffset/2));
-            bounds[1] = Math.min(width-1,Math.min(bounds[1] + 1, width/2 + maxBoundOffset/2));
-            bounds[2] = Math.max(0, Math.max(bounds[2] - 1, height/2 - maxBoundOffset/2));
-            bounds[3] = Math.min(height - 1, Math.min(bounds[3] + 1, height / 2 + maxBoundOffset/2));
-            balanced = isBalanced(boxes);
-            iterations++;
+            bounds[0] = Math.max(0, Math.max(bounds[0] - 1, height/2 - maxBoundOffset/2));
+            bounds[1] = Math.min(height-1,Math.min(bounds[1] + 1, height/2 + maxBoundOffset/2));
+            bounds[2] = Math.max(0, Math.max(bounds[2] - 1, width/2 - maxBoundOffset/2));
+            bounds[3] = Math.min(width - 1, Math.min(bounds[3] + 1, width / 2 + maxBoundOffset/2));
+            redistributeIterations++;
         }
-        return iterations;
+        return redistributeIterations;
     }
 
     private static int getBoundOffset(long numberOfElements) {
         return (int)(Math.floor(Math.sqrt(numberOfElements))) + 1;
     }
 
-    private int[] getBounds(short[][] boxes,long  nrOfElements) {
-        int iMin = Integer.MAX_VALUE;
-        int iMax = Integer.MIN_VALUE;
-        int jMin = Integer.MAX_VALUE;
-        int jMax = Integer.MIN_VALUE;
-
+    private int[] getBounds(int[][] boxes,long  nrOfElements) {
         int boundOffset = getBoundOffset(nrOfElements);
         int minI = Math.max((width / 2 - boundOffset / 2) - 2,0);
-        int maxI = Math.min((width / 2 + boundOffset / 2) + 2,boxes.length);
+        int maxI = Math.min((width / 2 + boundOffset / 2) + 2,boxes.length-1);
         int minJ = Math.max((height / 2 - boundOffset / 2) - 2, 0);
-        int maxJ = Math.min((height / 2 + boundOffset / 2) + 2,boxes[0].length);
-        for (int i = minI; i < maxI; i++) {
-            for (int j = minJ; j < maxJ; j++) {
-                if (boxes[i][j] > 0) {
-                    iMin = Math.min(i, iMin);
-                    iMax = Math.max(i, iMax);
-                    jMin = Math.min(j, jMin);
-                    jMax = Math.max(j, jMax);
-                }
-            }
-        }
-        return new int[]{iMin, iMax, jMin, jMax};
+        int maxJ = Math.min((height / 2 + boundOffset / 2) + 2,boxes[0].length-1);
+        return new int[]{Math.max(0, minI), Math.min(height-1, maxI), Math.max(minJ, 0), Math.min(maxJ, width-1)};
     }
 
-    private boolean isBalanced(short[][] boxes) {
-        for (short[] row : boxes) {
-            for (short value : row) {
+    boolean isBalanced(int[][] boxes) {
+        for (int[] row : boxes) {
+            for (int value : row) {
                 if (value >= MAX_SIZE) {
                     return false;
                 }
@@ -110,7 +108,7 @@ public class SandSimulation {
         return true;
     }
 
-    void moveToNeighborsIfNecessary(int i, int j, short[][] boxes) {
+    void moveToNeighborsIfNecessary(int i, int j, int[][] boxes) {
         if (boxes[i][j] < MAX_SIZE) {
             return;
         }

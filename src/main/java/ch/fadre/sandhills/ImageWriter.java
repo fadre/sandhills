@@ -9,10 +9,10 @@ import java.io.IOException;
 
 public class ImageWriter {
 
-    public BufferedImage generateImage(short[][] grid, int width, int height) throws IOException, InterruptedException {
+    public BufferedImage generateImage(int[][] grid, int width, int height) throws IOException, InterruptedException {
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         for (int i = 0; i < grid.length; i++) {
-            short[] row = grid[i];
+            int[] row = grid[i];
             for (int j = 0; j < row.length; j++) {
                 bufferedImage.setRGB(j, i, getColor(row[j]).getRGB());
             }
@@ -33,7 +33,7 @@ public class ImageWriter {
         ImageIO.write(bufferedImage, "png", new File(fileName));
     }
 
-    private static Color getColor(short i) {
+    private static Color getColor(int i) {
         switch (i) {
             case 0:
                 return new Color(39, 111, 161);

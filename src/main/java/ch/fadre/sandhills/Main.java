@@ -23,8 +23,8 @@ public class Main {
             showUsage();
         }
 
-        SandSimulation sandSimulation = new SandSimulation(width, height, iterationCount);
-        short[][] result = sandSimulation.performSimulation();
+        SandSimulation sandSimulation = new SandSimulation(width, height, iterationCount, true);
+        int[][] result = sandSimulation.performSimulation();
 
         ImageWriter imageWriter = new ImageWriter();
         BufferedImage bufferedImage = imageWriter.generateImage(result, width, height);

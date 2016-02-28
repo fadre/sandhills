@@ -11,11 +11,12 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.apache.commons:commons-csv:1.2'
+    testCompile 'junit:junit:4.11';
 }
 
 run {
     systemProperties System.getProperties()
 
-    args System.getProperty("exec.args").split()
+    args System.getProperty("exec.args") ? System.getProperty("exec.args").split() : new String[0];
 }

@@ -24,7 +24,7 @@ public class ImageWriter {
         this.colorConfig = colorConfig;
     }
 
-    public BufferedImage generateImage(int[][] grid, int width, int height) throws IOException, InterruptedException {
+    public BufferedImage generateImage(int[][] grid, int width, int height) throws IOException {
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         for (int i = 0; i < grid.length; i++) {
             int[] row = grid[i];

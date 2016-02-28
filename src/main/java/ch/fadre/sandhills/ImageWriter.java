@@ -14,7 +14,7 @@ public class ImageWriter {
         for (int i = 0; i < grid.length; i++) {
             short[] row = grid[i];
             for (int j = 0; j < row.length; j++) {
-                bufferedImage.setRGB(i, j, getColor(row[j]).getRGB());
+                bufferedImage.setRGB(j, i, getColor(row[j]).getRGB());
             }
         }
         return bufferedImage;

@@ -16,7 +16,7 @@ public class SandSimulationTest {
 
     @Before
     public void setUp() throws Exception {
-        sandSimulation = new SandSimulation(3, 3, 1, false);
+        sandSimulation = new SandSimulation(3, 3, 1, false,"test");
         testGrid = new int[3][3];
     }
 

@@ -1,23 +1,28 @@
 package ch.fadre.sandhills;
 
 
+import ch.fadre.sandhills.output.ImageWriter;
+
 import java.io.IOException;
 
 public class SandSimulation {
+
+    private static final int MAX_SIZE = 4;
 
     private final long iterationCount;
     private final int[][] grid;
     private final int width;
     private final int height;
 
-    public static final int MAX_SIZE = 4;
+    private String simulationName;
     private boolean stepWiseSimulation;
 
-    public SandSimulation(int width, int height, long iterationCount, boolean stepWiseSimulation) {
+    public SandSimulation(int width, int height, long iterationCount, boolean stepWiseSimulation,String simulationName) {
         this.iterationCount = iterationCount;
         this.width = width;
         this.height = height;
         this.stepWiseSimulation = stepWiseSimulation;
+        this.simulationName = simulationName;
         grid = new int[height][width];
     }
 
@@ -30,7 +35,7 @@ public class SandSimulation {
             grid[height / 2][width / 2] = (int)iterationCount;
             redistribute(grid, iterationCount);
         }
-        System.out.println("Took:" + (System.currentTimeMillis() - start) + " ms");
+        System.out.println("Simulation took:" + ((System.currentTimeMillis() - start)/1000.0) + " s");
         return grid;
     }
 
@@ -45,7 +50,7 @@ public class SandSimulation {
             }
             if(i % 10000 == 0){
                 ImageWriter imageWriter = new ImageWriter();
-                imageWriter.writeToFile(imageWriter.generateImage(grid,width,height),"row");
+                imageWriter.writeToFile(imageWriter.generateImage(grid,width,height),simulationName+"-Step"+i);
             }
 
             int iterations = redistribute(grid,i );

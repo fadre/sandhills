@@ -1,4 +1,4 @@
-package ch.fadre.sandhills;
+package ch.fadre.sandhills.output;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -45,11 +45,7 @@ public class ImageWriter {
 
     public void writeToFile(BufferedImage bufferedImage, String prefix) throws IOException {
         String fileName = prefix  + ".png";
-        File resultsDir = new File("results");
-        if(!resultsDir.exists()){
-            resultsDir.mkdir();
-        }
-        ImageIO.write(bufferedImage, "png", new File(resultsDir,fileName));
+        ImageIO.write(bufferedImage, "png", new File(ResultUtil.getResultDir(),fileName));
     }
 
     private Color getColor(int i) {

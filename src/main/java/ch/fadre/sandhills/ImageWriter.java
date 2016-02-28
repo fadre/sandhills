@@ -18,8 +18,6 @@ public class ImageWriter {
             }
         }
         return bufferedImage;
-
-
     }
 
     public void displayInFrame(BufferedImage bufferedImage) {
@@ -40,13 +38,13 @@ public class ImageWriter {
             case 0:
                 return new Color(39, 111, 161);
             case 1:
-                return new Color(224, 143, 18);
-            case 2:
-                return new Color(176, 52, 39);
-            case 3:
                 return new Color(26, 151, 82);
+            case 2:
+                return new Color(224, 143, 18);
+            case 3:
+                return new Color(176, 52, 39);
             default:
-                System.out.println("This should not happen :)");
+                System.out.println("This should never happen :)");
                 return new Color(39, 111, 161);
         }
     }

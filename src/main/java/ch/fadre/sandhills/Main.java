@@ -17,7 +17,7 @@ public class Main {
 
         String simulationName = createSimulationName();
 
-        SandSimulation sandSimulation = new SandSimulation(width, height, iterationCount, true, simulationName);
+        SandSimulation sandSimulation = new SandSimulation(width, height, iterationCount, false, simulationName);
         int[][] result = sandSimulation.performSimulation();
 
         CSVWriter csvWriter = new CSVWriter();

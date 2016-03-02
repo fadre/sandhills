@@ -13,6 +13,7 @@ public class SandSimulation {
     private final int[][] grid;
     private final int width;
     private final int height;
+
     private long moveOperations = 0;
 
     private String simulationName;
@@ -39,7 +40,7 @@ public class SandSimulation {
             grid[height / 2][width / 2] = (int) iterationCount;
             redistribute(grid);
         }
-        System.out.println("Simulation took:" + ((System.currentTimeMillis() - start) / 1000.0) + " s");
+        System.out.println("Simulation took:" + ((System.currentTimeMillis() - start) / 1000.0) + " s for " + moveOperations + " total move operations");
         return grid;
     }
 
@@ -66,7 +67,7 @@ public class SandSimulation {
         String boundString = " Bounds: " + currentBounds.getTop() + " " + currentBounds.getBottom() + " " + currentBounds.getLeft() + " " + currentBounds.getRight();
         long now = System.currentTimeMillis();
         String timeStr = (now - lastIt) + " ms";
-        System.out.println(iterationString + boundString + " MaxIterations: " + maxIterations + " StepTime:" + timeStr +" MoveOperations" + moveOperations);
+        System.out.println(iterationString + boundString + " MaxIterations: " + maxIterations + " StepTime:" + timeStr +" MoveOperations: " + moveOperations);
         return now;
     }
 

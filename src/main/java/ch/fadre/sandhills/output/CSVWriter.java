@@ -1,6 +1,7 @@
 package ch.fadre.sandhills.output;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -10,7 +11,7 @@ public class CSVWriter {
 
     public void writeToFile(int[][] grid, String prefix)  {
         String fileName = prefix + System.currentTimeMillis() + ".csv";
-        try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileName))){
+        try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(ResultUtil.getResultDir(),fileName)))){
             for (int[] rows : grid) {
                 String line = IntStream.of(rows).boxed().map(String::valueOf).collect(Collectors.joining(";"));
                 bufferedWriter.write(line +"\n");

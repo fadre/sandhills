@@ -52,14 +52,14 @@ public class SandSimulationTest {
     public void testIsBalanced_unBalanced() throws Exception {
         testGrid[1][1] = 4;
 
-        assertFalse(sandSimulation.isBalanced(testGrid, currentBounds));
+        assertFalse(sandSimulation.isBalanced());
     }
 
     @Test
     public void testIsBalanced_() throws Exception {
         testGrid[1][1] = 3;
 
-        assertTrue(sandSimulation.isBalanced(testGrid,currentBounds));
+        assertTrue(sandSimulation.isBalanced());
     }
 
 

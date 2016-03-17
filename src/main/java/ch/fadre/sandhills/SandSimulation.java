@@ -6,13 +6,15 @@ import ch.fadre.sandhills.output.ImageWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toCollection;
 
 public class SandSimulation {
 
     private static final int MAX_SIZE = 4;
 
     private final long iterationCount;
+
     private final int[][] grid;
     private final int width;
     private final int height;
@@ -80,14 +82,14 @@ public class SandSimulation {
     }
 
 
-    private int redistribute(int[][] boxes) {
+    private int redistribute(int[][] grid) {
         int redistributeIterations = 0;
-        while (!isBalanced(boxes, currentBounds)) {
+        while (!isBalanced()) {
             List<DistributeEntry> newEntries = new LinkedList<>();
             for (DistributeEntry distributeEntry : toBalanceQueue) {
-                moveToNeighborsIfNecessary(distributeEntry.getX(), distributeEntry.getY(), boxes, currentBounds, newEntries);
+                moveToNeighborsIfNecessary(distributeEntry.getX(), distributeEntry.getY(), grid, newEntries);
             }
-            toBalanceQueue =  toBalanceQueue.stream().filter(e -> boxes[e.getX()][e.getY()] >= MAX_SIZE).collect(Collectors.toCollection(LinkedList::new));
+            toBalanceQueue =  toBalanceQueue.stream().filter(e -> grid[e.getX()][e.getY()] >= MAX_SIZE).collect(toCollection(LinkedList::new));
             toBalanceQueue.addAll(newEntries);
             redistributeIterations++;
         }
@@ -95,23 +97,11 @@ public class SandSimulation {
         return redistributeIterations;
     }
 
-    boolean isBalanced(int[][] boxes, Bounds currentBounds) {
+    boolean isBalanced() {
         return toBalanceQueue.isEmpty();
-//        int top = currentBounds.getTop();
-//        int bottom = currentBounds.getBottom();
-//        int left = currentBounds.getLeft();
-//        int right = currentBounds.getRight();
-//        for (int i = top; i < bottom; i++) {
-//            for (int j = left; j < right; j++) {
-//                if (boxes[i][j] >= MAX_SIZE) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
     }
 
-    void moveToNeighborsIfNecessary(int i, int j, int[][] boxes, Bounds currentBounds, List<DistributeEntry> newEntries) {
+    void moveToNeighborsIfNecessary(int i, int j, int[][] boxes, List<DistributeEntry> newEntries) {
         if (boxes[i][j] < MAX_SIZE) {
             return;
         }

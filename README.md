@@ -15,3 +15,21 @@ Currently:
 
 Here the result of a simulation with 1 Million grains in a 1000 x 1000 cell grid:
 ![Resulting Image](/docs/images/result.png)
+
+To try it yourself run:
+
+```
+gradlew run -Dexec.args="300 300 10000"
+```
+
+to run a simulation wit a 300 by 300 grid with 10000 sand grains.
+Each simulation creates a csv file and one or multiple resulting png images.
+
+The CSV-file can be used to create images with different colors after a simulation is done.
+
+
+
+
+
+
+

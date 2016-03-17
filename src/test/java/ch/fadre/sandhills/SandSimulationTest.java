@@ -26,7 +26,7 @@ public class SandSimulationTest {
     public void testMoveToNeighbors_overflow() throws Exception {
         testGrid[1][1] = 4;
 
-        sandSimulation.moveToNeighborsIfNecessary(1,1,testGrid, currentBounds);
+//        sandSimulation.moveToNeighborsIfNecessary(1,1,testGrid, currentBounds);
 
         assertThat(testGrid[0][1], is(1));
         assertThat(testGrid[1][0], is(1));
@@ -39,7 +39,7 @@ public class SandSimulationTest {
     public void testMoveToNeighbors_NoOverflow1() throws Exception {
         for (short i = 0; i < 4; i++) {
             testGrid[1][1] = i;
-            sandSimulation.moveToNeighborsIfNecessary(1,1,testGrid, currentBounds);
+//            sandSimulation.moveToNeighborsIfNecessary(1,1,testGrid, currentBounds);
             assertThat(testGrid[0][1], is(0));
             assertThat(testGrid[1][0], is(0));
             assertThat(testGrid[1][2], is(0));

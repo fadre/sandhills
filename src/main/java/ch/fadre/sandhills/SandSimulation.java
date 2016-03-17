@@ -4,6 +4,9 @@ package ch.fadre.sandhills;
 import ch.fadre.sandhills.output.ImageWriter;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SandSimulation {
 
@@ -20,6 +23,8 @@ public class SandSimulation {
     private boolean stepWiseSimulation;
 
     private Bounds currentBounds;
+
+    private List<DistributeEntry> toBalanceQueue = new LinkedList<>();
 
     public SandSimulation(int width, int height, long iterationCount, boolean stepWiseSimulation, String simulationName) {
         this.iterationCount = iterationCount;
@@ -48,6 +53,9 @@ public class SandSimulation {
         long lastIterationTimestamp = System.currentTimeMillis();
         for (long i = 0; i < iterationCount; i++) {
             grid[height / 2][width / 2] = (short) (grid[height / 2][width / 2] + 1);
+            if(grid[height / 2][width / 2] >= MAX_SIZE){
+                toBalanceQueue.add(new DistributeEntry(height/2,width/2));
+            }
             if (i % 1000 == 0) {
                 lastIterationTimestamp = logProgress(i, maxIterations, lastIterationTimestamp);
                 maxIterations = 0;
@@ -74,34 +82,36 @@ public class SandSimulation {
 
     private int redistribute(int[][] boxes) {
         int redistributeIterations = 0;
-
         while (!isBalanced(boxes, currentBounds)) {
-            for (int i = currentBounds.getTop(); i <= currentBounds.getBottom(); i++) {
-                for (int j = currentBounds.getLeft(); j <= currentBounds.getRight(); j++) {
-                    moveToNeighborsIfNecessary(i, j, boxes, currentBounds);
-                }
+            List<DistributeEntry> newEntries = new LinkedList<>();
+            for (DistributeEntry distributeEntry : toBalanceQueue) {
+                moveToNeighborsIfNecessary(distributeEntry.getX(), distributeEntry.getY(), boxes, currentBounds, newEntries);
             }
+            toBalanceQueue =  toBalanceQueue.stream().filter(e -> boxes[e.getX()][e.getY()] >= MAX_SIZE).collect(Collectors.toCollection(LinkedList::new));
+            toBalanceQueue.addAll(newEntries);
             redistributeIterations++;
         }
+
         return redistributeIterations;
     }
 
     boolean isBalanced(int[][] boxes, Bounds currentBounds) {
-        int top = currentBounds.getTop();
-        int bottom = currentBounds.getBottom();
-        int left = currentBounds.getLeft();
-        int right = currentBounds.getRight();
-        for (int i = top; i < bottom; i++) {
-            for (int j = left; j < right; j++) {
-                if (boxes[i][j] >= MAX_SIZE) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return toBalanceQueue.isEmpty();
+//        int top = currentBounds.getTop();
+//        int bottom = currentBounds.getBottom();
+//        int left = currentBounds.getLeft();
+//        int right = currentBounds.getRight();
+//        for (int i = top; i < bottom; i++) {
+//            for (int j = left; j < right; j++) {
+//                if (boxes[i][j] >= MAX_SIZE) {
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
     }
 
-    void moveToNeighborsIfNecessary(int i, int j, int[][] boxes, Bounds currentBounds) {
+    void moveToNeighborsIfNecessary(int i, int j, int[][] boxes, Bounds currentBounds, List<DistributeEntry> newEntries) {
         if (boxes[i][j] < MAX_SIZE) {
             return;
         }
@@ -109,24 +119,31 @@ public class SandSimulation {
         int newTop = i - 1;
         if (newTop >= 0) {
             boxes[newTop][j] += 1;
-            currentBounds.decreaseTopIfNecessary(newTop);
+            addIfLarger(newTop,j,boxes,newEntries);
         }
         int newBottom = i + 1;
         if (newBottom < height) {
             boxes[newBottom][j] += 1;
-            currentBounds.increaseBottomIfNecessary(newBottom);
+            addIfLarger(newBottom,j,boxes,newEntries);
         }
         int newLeft = j - 1;
         if (newLeft >= 0) {
             boxes[i][newLeft] += 1;
-            currentBounds.decreaseLeftIfNecessary(newLeft);
+            addIfLarger(i,newLeft,boxes,newEntries);
         }
         int newRight = j + 1;
         if (newRight < width) {
             boxes[i][newRight] += 1;
-            currentBounds.increaseRightIfNecessary(newRight);
+            addIfLarger(i,newRight,boxes,newEntries);
         }
-        boxes[i][j] -= 4;
+       boxes[i][j] -= 4;
     }
+
+    private void addIfLarger(int i, int j, int[][] grid, List<DistributeEntry> toRedistribute){
+        if(grid[i][j] >= MAX_SIZE){
+            toRedistribute.add(new DistributeEntry(i,j));
+        }
+    }
+
 
 }

@@ -1,7 +1,7 @@
 # sandhills
 
 This is a little for fun project that simulates an idealized (theoretical) sand pile.
-
+It is basically a java implementation of the following article: http://nautil.us/issue/23/dominoes/the-amazing-autotuning-sandpile
 Sand grains are slowly added to the pile (a grid). Each grid cell has a maximum height of 3 sand grains, if its height reaches 4,
 the pile collapses and the four grains are added to each of the neighbors (east west north south). The collapsed pile is then empty again (0 sand grains).
 When this is repeated on a large scale, the distribution of the sand grains start to show symmetric patterns.
@@ -26,6 +26,7 @@ to run a simulation wit a 300 by 300 grid with 10000 sand grains.
 Each simulation creates a csv file and one or multiple resulting png images.
 
 The CSV-file can be used to create images with different colors after a simulation is done.
+For this, use the ResultConverter class.
 
 
 

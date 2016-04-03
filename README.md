@@ -13,5 +13,5 @@ Currently:
 * yellow = 2 grains
 * red = 3 grains
 
-Here the result of a simulation with 1 Million grains in a 1000 x 1000 cell grid:
+Here the result of a simulation with 10 Million grains in a 2500 x 2500 cell grid:
 ![Resulting Image](/docs/images/result.png)

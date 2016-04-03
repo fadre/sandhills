@@ -5,7 +5,7 @@ import ch.fadre.sandhills.output.ImageWriter;
 
 import java.io.IOException;
 
-public class SandSimulation {
+class SandSimulation {
 
     private static final int MAX_SIZE = 4;
 
@@ -21,7 +21,7 @@ public class SandSimulation {
 
     private Bounds currentBounds;
 
-    public SandSimulation(int width, int height, long iterationCount, boolean stepWiseSimulation, String simulationName) {
+    SandSimulation(int width, int height, long iterationCount, boolean stepWiseSimulation, String simulationName) {
         this.iterationCount = iterationCount;
         this.width = width;
         this.height = height;
@@ -30,7 +30,7 @@ public class SandSimulation {
         grid = new int[height][width];
     }
 
-    public int[][] performSimulation() throws IOException, InterruptedException {
+    int[][] performSimulation() throws IOException, InterruptedException {
         long start = System.currentTimeMillis();
         int maxIterations = 0;
         currentBounds = new Bounds((height / 2)-1, (height / 2) +1, (width / 2)-1, (width / 2)+1);

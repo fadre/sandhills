@@ -8,9 +8,9 @@ import java.io.IOException;
 
 public class Main {
 
-    public static int width = 250;
-    public static int height = 250;
-    public static long iterationCount = 100_000;
+    private static int width = 250;
+    private static int height = 250;
+    private static long iterationCount = 100_000;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         parseArguments(args);

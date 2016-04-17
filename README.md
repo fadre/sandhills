@@ -16,6 +16,7 @@ Currently:
 Here the result of a simulation with 10 Million grains in a 2500 x 2500 cell grid:
 ![Resulting Image](/docs/images/result.png)
 
+Ane here you can watch it grow: https://youtu.be/FpEApjaj46A
 To try it yourself run:
 
 ```
